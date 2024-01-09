@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-declare_id!("H3p6TjSckEAEJMKofitiCzfaRiLWNMnm5CftXSECJqKM");
+declare_id!("5PmsLUaWNKBdayAMGFGC6MY8FZ5QmFLW3JwpeYD5jNMN");
 
 #[program]
 pub mod dapp_starter {
@@ -17,7 +17,7 @@ pub mod dapp_starter {
     //create round
     pub fn create_round(
         _ctx: Context<CreateRound>,
-        round_id: u43
+        round_id: u32
     ) -> ProgramResult {
         let config = &mut _ctx.accounts.config;
         let round = &mut _ctx.accounts.round;
@@ -25,9 +25,7 @@ pub mod dapp_starter {
 
         config.count += 1;
         round.id = config.count;
-        round.created_at = created_at;
         round.updated_at = clock.unix_timestamp;
-        round.waiting_time = waiting_time;
         Ok(())
     }
 }
@@ -60,7 +58,7 @@ pub struct Increment<'info>{
 
 #[account]
 pub struct Counter {
-    pub count: u64,
+    pub count: u32,
 }
 
 #[derive(Accounts)]
@@ -72,7 +70,7 @@ pub struct CreateRound<'info> {
         init,
         payer = payer,
         space = 8 + 4 + 1 + 1 + 4 + 8 + 8 + 1 + 8 + 8 + 8 + 8 + 1 + 1000 * (4 + 4 + 1 + 32 + 1 + 8 + 8 + 8 + 8),
-        seeds = [ROUND_SEED.as_bytes(), &round_id.to_le_bytes()],
+        seeds = ["round".as_bytes(), &round_id.to_le_bytes()],
         bump,
     )]
     pub round: Account<'info, Round>,

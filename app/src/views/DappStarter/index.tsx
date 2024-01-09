@@ -128,7 +128,7 @@ const DappStarterScreen = () => {
         <div className="value">
           {counter !== undefined && (
             <p className="mb-4 text-xl counter">
-              Counter: {counter.toNumber()}
+              Counter: {counter}
             </p>
           )}
         </div>
