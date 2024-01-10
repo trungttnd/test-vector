@@ -38,6 +38,22 @@ export type DappStarter = {
         }
       ],
       "args": []
+    },
+    {
+      "name": "close",
+      "accounts": [
+        {
+          "name": "account",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "destination",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
     }
   ],
   "accounts": [
@@ -93,6 +109,22 @@ export const IDL: DappStarter = {
           "name": "user",
           "isMut": true,
           "isSigner": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "close",
+      "accounts": [
+        {
+          "name": "account",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "destination",
+          "isMut": false,
+          "isSigner": false
         }
       ],
       "args": []
