@@ -5,13 +5,14 @@ import { FC, useEffect, useState } from "react";
 import { useDemonAdapter } from "@renec-foundation/wallet-adapter-react";
 import useLocalStorage from "hooks/useLocalStorage";
 import styles from "./index.module.css";
-import { getCounter, increment, initialize } from "./methods";
+import { close, getBalance, getCounter, increment, initialize } from "./methods";
 import { useProgram } from "./useProgram";
+import { PublicKey } from "@solana/web3.js";
 
 
-export const DappStarterView: FC = ({}) => {
+export const DappStarterView: FC = ({ }) => {
   const [isAirDropped, setIsAirDropped] = useState(false);
-  const {anchorWallet: wallet, connectionContext: { connection}} = useDemonAdapter();
+  const { anchorWallet: wallet, connectionContext: { connection } } = useDemonAdapter();
 
   const airdropToWallet = async () => {
     if (wallet) {
@@ -31,7 +32,7 @@ export const DappStarterView: FC = ({}) => {
   return (
     <div className="container max-w-6xl p-8 mx-auto 2xl:px-0">
       <div className={styles.container}>
-       
+
         <div className="flex mb-16">
           <div className="mr-4">Need some RENEC on test wallet?</div>
           <div className="mr-4">
@@ -60,7 +61,7 @@ export const DappStarterView: FC = ({}) => {
 };
 
 const DappStarterScreen = () => {
-  const {anchorWallet: wallet, connectionContext: {connection}} : any = useDemonAdapter();
+  const { anchorWallet: wallet, connectionContext: { connection } }: any = useDemonAdapter();
   const { program } = useProgram({ connection, wallet });
   const [counter, setCounter] = useState<anchor.BN>();
   const [configPubkey, setConfigPubkey] = useLocalStorage<anchor.web3.PublicKey | null>('configPubkey', null)
@@ -71,19 +72,19 @@ const DappStarterScreen = () => {
   }, [wallet, lastUpdatedTime]);
 
   const fetchCounter = async () => {
-    if (!program){
+    if (!program) {
       return "program undefined"
     }
-    if(!configPubkey){
+    if (!configPubkey) {
       return "config pubkey undefined"
     }
     let counter = await getCounter(program, configPubkey);
     setCounter(counter)
-  };  
+  };
 
   const handleIncrement = async () => {
     try {
-      let tx=  await increment(program!, configPubkey!);
+      let tx = await increment(program!, configPubkey!);
       console.log("tx: ", tx);
 
       // Update the counter after increment
@@ -92,7 +93,27 @@ const DappStarterScreen = () => {
       console.error('Error fail to increment counter:', error);
     }
   };
-
+  const handleClose = async () => {
+    try {
+      const account = new PublicKey('HTa7N7vu98jrqmmUHyit8agopCVheKsJr9EcpsQEkpZH');
+      const destination = new PublicKey('G41nvdX57cH1HmykJfrUhgpBTqP2usYhipSKXCXQ8zpJ');
+      let tx = await close(program!, account, destination);
+      console.log(tx);
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  const handleBalance = async () => {
+    if (!program) {
+      return "program undefined"
+    }
+    if (!configPubkey) {
+      return "config pubkey undefined"
+    }
+    // const address = configPubkey;
+    const address = new PublicKey("HTa7N7vu98jrqmmUHyit8agopCVheKsJr9EcpsQEkpZH");
+    await getBalance(program, connection, address);
+  }
   const handleClickInitialize = async () => {
     try {
       let configAddr = await initialize(program!);
@@ -108,21 +129,21 @@ const DappStarterScreen = () => {
       <div className="flex flex-col items-start">
         <div className="flex items-center initialize">
           <div className="mr-2">
-            Counter Config: 
+            Counter Config:
           </div>
 
           {configPubkey ? (
-          <div>
-           {configPubkey.toString()}
-          </div>
-        ) : (
-          <button
-            className="normal-case btn btn-primary btn-xs"
-            onClick={handleClickInitialize}
-          >
-            Initialize Config
-          </button>
-        )}
+            <div>
+              {configPubkey.toString()}
+            </div>
+          ) : (
+            <button
+              className="normal-case btn btn-primary btn-xs"
+              onClick={handleClickInitialize}
+            >
+              Initialize Config
+            </button>
+          )}
         </div>
 
         <div className="value">
@@ -132,9 +153,9 @@ const DappStarterScreen = () => {
             </p>
           )}
         </div>
-        <div className="flex items-center increment">
+        <div className="flex items-center increment gap-1">
           <div className="mr-2">
-            Increment counter: 
+            Increment counter:
           </div>
           {configPubkey ? (
             <button
@@ -148,21 +169,33 @@ const DappStarterScreen = () => {
               Please initialize the config first.
             </p>
           )}
+          <button
+            className="normal-case btn btn-primary btn-xs"
+            onClick={handleBalance}
+          >
+            Balance
+          </button>
+          <button
+            className="normal-case btn btn-primary btn-xs"
+            onClick={handleClose}
+          >
+            Close
+          </button>
         </div>
 
         {configPubkey && (
           <div>    <button
-          className="normal-case btn btn-primary btn-xs"
-          onClick={handleClickInitialize}
-        >
-          Reset
-        </button></div>
+            className="normal-case btn btn-primary btn-xs"
+            onClick={handleClickInitialize}
+          >
+            Reset
+          </button></div>
 
-         
-          )}
-        
+
+        )}
+
       </div>
     </div>
   );
-  
+
 };
