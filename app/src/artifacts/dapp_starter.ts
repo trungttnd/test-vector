@@ -44,12 +44,12 @@ export type DappStarter = {
       "accounts": [
         {
           "name": "account",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
           "name": "destination",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         }
       ],
@@ -118,12 +118,12 @@ export const IDL: DappStarter = {
       "accounts": [
         {
           "name": "account",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
           "name": "destination",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         }
       ],

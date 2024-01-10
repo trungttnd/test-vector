@@ -16,7 +16,7 @@ pub mod dapp_starter {
     }
 
     pub fn close(ctx: Context<Close>) -> ProgramResult {
-        let dest_starting_lamports = ctx.accounts.destination.lamports();
+        let dest_starting_lamports = &mut ctx.accounts.destination.lamports();
 
         **ctx.accounts.destination.lamports.borrow_mut() = dest_starting_lamports
             .checked_add(ctx.accounts.account.to_account_info().lamports())
@@ -54,8 +54,14 @@ pub struct Increment<'info>{
 }
 #[derive(Accounts)]
 pub struct Close<'info> {
+    #[account(
+        mut
+    )]
     account: Account<'info, Counter>,
     /// CHECK:
+    #[account(
+        mut
+    )]
     destination: AccountInfo<'info>
 }
 

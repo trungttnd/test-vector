@@ -44,12 +44,12 @@
       "accounts": [
         {
           "name": "account",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
           "name": "destination",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         }
       ],
